@@ -14,12 +14,15 @@ class LRUCache:
         self.cache = {}
         self.lru = {}
 
+    def __contains__(self, key):
+        return key in self.cache
+
     def __getitem__(self, key):
         if key in self.cache:
             self.lru[key] = self.tm
             self.tm += 1
             return self.cache[key]
-        return -1
+        raise KeyError(key)
 
     def __setitem__(self, key, value):
         if len(self.cache) >= self.capacity:

@@ -37,7 +37,6 @@ def test_dependency_parse():
     assert response.json() == [[1, '한시간', 2, 'NP_OBJ'], [2, '기다렸어요.', -1, 'VP']]
 
 
-"""
 def test_named_entity_recognition():
     response = get_request("/namedEntityRecognition", {'lang': 'en', 'sentences': "It was in midfield where Arsenal took control of the game, and that was mainly down to Thomas Partey and Mohamed Elneny."})
     assert response.status_code == 200
@@ -66,7 +65,6 @@ def test_named_entity_recognition():
     assert response.json() == [('豊臣秀吉', 'PERSON'), ('、', 'O'), ('または', 'O'), ('羽柴秀吉', 'PERSON'), ('は', 'O'), ('、', 'O'), ('戦国時代', 'DATE'), ('から', 'O'), 
     ('安土桃山時代', 'DATE'), ('にかけて', 'O'), ('の', 'O'), ('武将', 'O'), ('、', 'O'), ('大名', 'O'), ('。', 'O'), ('天下', 'O'), ('人', 'O'), ('、', 'O'), ('武家', 'O'), 
     ('関白', 'O'), ('、太閤', 'O'), ('。', 'O'), ('三', 'O'), ('英', 'O'), ('傑', 'O'), ('の', 'O'), ('一', 'O'), ('人', 'O'), ('。', 'O')]
-"""
 
 
 def test_part_of_speech():
@@ -93,7 +91,6 @@ def test_part_of_speech():
     assert response.json() == _([('乒乓球', 'n'), ('拍卖', 'v'), ('完', 'v'), ('了', 'ul')])
 
 
-"""
 def test_sentiment_analysis():
     response = get_request("/sentimentAnalysis", {'iso': 'ko', 'sentences': "배송이 버트 학습시키는 것 만큼 느리네요"})
     assert response.status_code == 200
@@ -120,12 +117,19 @@ def test_sentiment_analysis():
     response = get_request("/sentimentAnalysis", {'iso': 'ja', 'sentences': '日が良く散歩に行きたいです。'})
     assert response.status_code == 200
     assert response.json()['overall'] == 'Positive'
-"""
 
 
 #===========================================================#
 # Text Classification
 #===========================================================#
+
+
+def test_zero_shot_topic_classification():
+    pass
+
+
+def test_natural_language_inference():
+    pass
 
 
 #===========================================================#
@@ -155,4 +159,16 @@ def test_grapheme_to_phoneme():
 #===========================================================#
 # Miscellaneous
 #===========================================================#
+
+
+async def test_morphological_inflection():
+    pass
+
+
+async def test_ocr():
+    pass
+
+
+async def test_collocation():
+    pass
 
