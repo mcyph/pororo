@@ -25,8 +25,8 @@ class CustomRobertaModel(RobertaModel):
 
         ckpt_dir = download_or_load(model_name, lang)
         x = hub_utils.from_pretrained(
-            ckpt_dir,
-            "model.pt",
+            model_name_or_path=ckpt_dir,
+            checkpoint_file="model.pt",
             bpe="gpt2",
             load_checkpoint_heads=True,
             **kwargs,
@@ -37,8 +37,8 @@ class CustomRobertaModel(RobertaModel):
 class CustomRobertaHubInterface(RobertaHubInterface):
 
     def __init__(self, args, task, model):
-        args.gpt2_encoder_json = download_or_load("misc/encoder.json", "en")
-        args.gpt2_vocab_bpe = download_or_load("misc/vocab.bpe", "en")
+        args.bpe.gpt2_encoder_json = download_or_load("misc/encoder.json", "en")
+        args.bpe.gpt2_vocab_bpe = download_or_load("misc/vocab.bpe", "en")
         super().__init__(args, task, model)
         self.softmax = nn.Softmax(dim=1)
 

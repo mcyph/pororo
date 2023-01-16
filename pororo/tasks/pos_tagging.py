@@ -161,8 +161,8 @@ class PororoMecabPos(PororoSimpleBase):
 
         """
         # Should split line with tap since comma is frequently used in input sentence
-        morph = unit[0]
-        features = unit[1]
+        morph = unit.surface  # CHECK THIS!
+        features = unit.feature
         pos = features.pos
         analysis = features.expression
 
@@ -223,6 +223,7 @@ class PororoMecabPos(PororoSimpleBase):
 
         for unit in analyzed:
             if not return_surface:
+                print('postprocessing:', unit)
                 morph, token = self._postprocess(unit)
             else:
                 token = unit
