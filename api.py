@@ -130,8 +130,8 @@ async def _(iso: str, sentences: str):
 
 
 @app.get("/naturalLanguageInference")
-async def _(iso: str, sentences: str):
-    return nli[iso](sentences)
+async def _(iso: str, sentence_1: str, sentence_2: str):
+    return nli[iso](sentence_1, sentence_2)
 
 
 #===========================================================#

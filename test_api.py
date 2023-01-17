@@ -125,11 +125,43 @@ def test_sentiment_analysis():
 
 
 def test_zero_shot_topic_classification():
-    pass
+    response = get_request("/zeroShotTopicClassification", {'iso': 'en', 'sentences': "Who are you voting for in 2020?"})
+    assert response.status_code == 200
+    assert response.json() == ["business", "art & culture", "politics"]
+    
+    response = get_request("/zeroShotTopicClassification", {'iso': 'ko', 'sentences': '''라리가 사무국, 메시 아닌 바르사 지지..."바이 아웃 유효" [공식발표]'''})
+    assert response.status_code == 200
+    assert response.json() == ["스포츠", "사회", "정치", "경제", "생활/문화", "IT/과학"]
+    
+    response = get_request("/zeroShotTopicClassification", {'iso': 'ko', 'sentences': '''장제원, 김종인 당무감사 추진에 “참 잔인들 하다”···정강정책 개정안은 “졸작”'''})
+    assert response.status_code == 200
+    assert response.json() == ["스포츠", "사회", "정치", "경제", "생활/문화", "IT/과학"]
+    
+    response = get_request("/zeroShotTopicClassification", {'iso': 'ja', 'sentences': "香川 真司は、兵庫県神戸市垂水区出身のプロサッカー選手。元日本代表。ポジションはMF、FW。ボルシア・ドルトムント時代の2010-11シーズンでリーグ前半期17試合で8得点を記録し9シーズンぶりのリーグ優勝に貢献。キッカー誌が選定したブンデスリーガの年間ベスト イレブンに名を連ねた。"})
+    assert response.status_code == 200
+    assert response.json() == ["スポーツ", "政治", "技術"]
+    
+    response = get_request("/zeroShotTopicClassification", {'iso': 'zh', 'sentences': "商务部14日发布数据显示，今年前10个月，我国累计对外投资904.6亿美元，同比增长5.9%。"})
+    assert response.status_code == 200
+    assert response.json() == ["政治", "经济", "国际化"]
 
 
 def test_natural_language_inference():
-    pass
+    response = get_request("/naturalLanguageInference", {'iso': 'ko', 'sentence_1': "저는, 그냥 알아내려고 거기 있었어요", 'sentence_2': "나는 처음부터 그것을 잘 이해했다"})
+    assert response.status_code == 200
+    assert response.json() == 'Contradiction'
+    
+    response = get_request("/naturalLanguageInference", {'iso': 'ja', 'sentence_1': '古い紳士は、洗濯をしながら写真を撮っていることがユーモラスであることがわかります。', 'sentence_2': '洗濯をしながら男が笑う'})
+    assert response.status_code == 200
+    assert response.json() == 'Entailment'
+    
+    response = get_request("/naturalLanguageInference", {'iso': 'zh', 'sentence_1': '一群人抬头看着建筑物屋顶边缘的3人。', 'sentence_2': '三人正在楼梯上爬下来。'})
+    assert response.status_code == 200
+    assert response.json() == 'Contradiction'
+    
+    response = get_request("/naturalLanguageInference", {'iso': 'en', 'sentence_1': "A soccer game with multiple males playing.", 'sentence_2': "Some men are playing a sport."})
+    assert response.status_code == 200
+    assert response.json() == 'Entailment'
 
 
 #===========================================================#
@@ -162,13 +194,66 @@ def test_grapheme_to_phoneme():
 
 
 async def test_morphological_inflection():
-    pass
+    response = get_request("/morphologicalInflection", {'iso': 'ko', 'word': "곱"})
+    assert response.status_code == 200
+    assert response.json() #== _([['Action Verb', [('거나', '곱거나'), ('거늘', '곱거늘'), ('거니', '곱거니') ...]]])
+    
+    response = get_request("/morphologicalInflection", {'iso': 'en', 'word': "love"})
+    assert response.status_code == 200
+    assert response.json() == _({'NN': [('loves', 'NNS')], 'VB': [('loves', 'VBZ'), ('loved', 'VBD'), ('loved', 'VBN'), ('loving', 'VBG')]})
+    
+    response = get_request("/morphologicalInflection", {'iso': 'ja', 'word': "あえぐ"})
+    assert response.status_code == 200
+    assert response.json() == _({'verb': [('あえが', '未然形'), ('あえご', '未然ウ接続'), ('あえぎ', '連用形'), ('あえい', '連用タ接続'), ('あえげ', '仮定形'), ('あえげ', '命令ｅ'), ('あえぎゃ', '仮定縮約１')]})    
 
 
+"""
 async def test_ocr():
-    pass
+    ocr = Pororo(task="ocr", lang="ko")
+    ocr(IMAGE_PATH)
+    ["사이렌'(' 신마'", "내가 말했잖아 속지열라고 이 손을 잡는 너는 위협해질 거라고"]
+
+    ocr = Pororo(task="ocr", lang="ko")
+    ocr(IMAGE_PATH, detail=True)
+    {
+        'description': ["사이렌'(' 신마', "내가 말했잖아 속지열라고 이 손을 잡는 너는 위협해질 거라고"],
+        'bounding_poly': [
+            {
+                'description': "사이렌'(' 신마'",
+                'vertices': [
+                    {'x': 93, 'y': 7},
+                    {'x': 164, 'y': 7},
+                    {'x': 164, 'y': 21},
+                    {'x': 93, 'y': 21}
+                ]
+            },
+            {
+                'description': "내가 말했잖아 속지열라고 이 손을 잡는 너는 위협해질 거라고",
+                'vertices': [
+                    {'x': 0, 'y': 30},
+                    {'x': 259, 'y': 30},
+                    {'x': 259, 'y': 194},
+                    {'x': 0, 'y': 194}]}
+                ]
+            }
+    }
+"""
 
 
 async def test_collocation():
-    pass
-
+    response = get_request("/collocation", {'iso': 'ko', 'word': "먹"})
+    assert response.status_code == 200
+    assert response.json()# == _()
+    
+    response = get_request("/collocation", {'iso': 'ja', 'word': "東京"})
+    assert response.status_code == 200
+    assert response.json() == _({'noun': {'noun': [('都', 137), ('家', 21), ('年', 18), ('府', 17), ('市', 12), ('式', 12), ('デザイナー', 10), ('日', 10), ('都立', 9), ('県', 9), ('出身', 8), ('証券', 8), ('後', 6)]}})
+    
+    response = get_request("/collocation", {'iso': 'en', 'word': "george"})
+    assert response.status_code == 200
+    assert response.json() == _({'noun': {'noun': [('washington', 13), ('gen.', 7)]}})
+    
+    response = get_request("/collocation", {'iso': 'zh', 'word': "世界杯"})
+    assert response.status_code == 200
+    assert response.json()# == _({'noun': {'noun': [('2002年', 72), ('足球赛', 71), ('冠军', 53), ('2006年', 39), ('決賽', 35), ('决赛', 30), ('1998年', 26), ('外圍賽', 25), ('2010年', 23), ('2018年', 22), ('冠軍', 21), ...}})
+    
