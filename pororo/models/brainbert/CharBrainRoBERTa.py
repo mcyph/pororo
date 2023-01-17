@@ -176,7 +176,7 @@ class CharBrainRobertaHubInterface(RobertaHubInterface):
             add_special_tokens=add_special_tokens,
             no_separator=no_separator,
         )
-        regression_target = self.args.regression_target
+        regression_target = self.model.encoder.args.regression_target
         with torch.no_grad():
             prediction = self.predict(
                 "sentence_classification_head",

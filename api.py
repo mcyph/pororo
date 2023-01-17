@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 
 app = FastAPI()
-MAXIMUM_CACHE_SIZE = 10
+MAXIMUM_CACHE_SIZE = 1
 
 
 class LRUCache:
@@ -55,7 +55,9 @@ class CachingDict:
 #===========================================================#
 
 
-dp = Pororo(task="dep_parse", lang="ko")
+dp = CachingDict('dep_parse', {
+    'ko': lambda: Pororo(task="dep_parse", lang="ko"),
+})
 pos = CachingDict('pos', {
     'ko': lambda: Pororo(task="pos", lang="ko"),
     'ja': lambda: Pororo(task="pos", lang="ja"),
@@ -81,7 +83,7 @@ sa = CachingDict('sa', {
 
 @app.get("/dependencyParse")
 async def _(sentences: str):
-    return dp(sentences)
+    return dp['ko'](sentences)
 
 
 @app.get("/namedEntityRecognition")
@@ -100,9 +102,11 @@ async def _(iso: str, sentences: str):
 
 @app.get("/sentimentAnalysis")
 async def _(iso: str, sentences: str):
-    r = sa[iso](sentences, probabilities=True)
-    for k, v in r.items():
-        v['overall'] = 'Positive' if v['positive'] >= 0.5 else 'Negative'
+    r = {}
+    for k, v in sa[iso].items():
+        i = v(sentences, show_probs=True)
+        i['overall'] = 'Positive' if i['positive'] >= 0.5 else 'Negative'
+        r[k] = i
     return r
 
 
@@ -162,7 +166,9 @@ inflection = CachingDict('inflection', {
     'en': lambda: Pororo(task="inflection", lang="en"),
     'ja': lambda: Pororo(task="inflection", lang="ja"),
 })
-ocr = Pororo(task="ocr", lang="ko")
+ocr = CachingDict('ocr', {
+    'ko': Pororo(task="ocr", lang="ko")
+})
 col = CachingDict('col', {
     'ko': lambda: Pororo(task="col", lang="ko"),
     'ja': lambda: Pororo(task="collocation", lang="ja"),
@@ -177,7 +183,7 @@ async def _(iso: str, word: str):
 
 @app.get("/ocr")
 async def _(image_data: str):
-    return ocr(image_data, detail=True)
+    return ocr['ko'](image_data, detail=True)
 
 
 @app.get("/collocation")

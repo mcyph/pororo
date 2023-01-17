@@ -50,7 +50,7 @@ class CustomRobertaHubInterface(RobertaHubInterface):
         no_separator: bool = False,
         show_probs: bool = False,
     ) -> Union[str, Dict]:
-        assert self.args.task == "sentence_prediction", (
+        assert self.model.encoder.args.task == "sentence_prediction", (
             "predict_output() only works for sentence prediction tasks.\n"
             "Use predict() to obtain model outputs; "
             "use predict_span() for span prediction tasks.")
@@ -68,10 +68,10 @@ class CustomRobertaHubInterface(RobertaHubInterface):
             prediction = self.predict(
                 "sentence_classification_head",
                 tokens,
-                return_logits=self.args.regression_target,
+                return_logits=self.model.encoder.args.regression_target,
             )
 
-            if self.args.regression_target:
+            if self.model.encoder.args.regression_target:
                 return prediction.item()  # float
 
             label_fn = lambda label: self.task.label_dictionary.string(

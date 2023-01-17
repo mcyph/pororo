@@ -147,9 +147,9 @@ class JabertaHubInterface(RobertaHubInterface):
             prediction = self.predict(
                 "sentence_classification_head",
                 tokens,
-                return_logits=self.args.regression_target,
+                return_logits=self.model.encoder.args.regression_target,
             )
-            if self.args.regression_target:
+            if self.model.encoder.args.regression_target:
                 return prediction.item()  # float
 
             label_fn = lambda label: self.task.label_dictionary.string(
