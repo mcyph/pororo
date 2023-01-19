@@ -22,7 +22,7 @@ requirements = [
     "g2pm",
     "g2p", 
     "g2pk", 
-    "python-romkan",
+    "romkan",
     "fugashi",
     "ipadic",
     "jieba",
@@ -33,6 +33,7 @@ requirements = [
     "kollocate",
     "tensorboardX",
     "pytest",
+    "fastapi[all]",
     'dataclasses; python_version<"3.7"',
 ]
 

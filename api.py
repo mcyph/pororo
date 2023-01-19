@@ -128,9 +128,10 @@ nli = CachingDict('nli', {
     'en': lambda: Pororo(task="nli", lang="en"),
 })
 
+
 @app.get("/zeroShotTopicClassification")
-async def _(iso: str, sentences: str):
-    return zsl[iso](sentences)
+async def _(iso: str, sentences: str, topics: str):
+    return zsl[iso](sentences, topics.split(','))
 
 
 @app.get("/naturalLanguageInference")
@@ -175,6 +176,16 @@ col = CachingDict('col', {
     'en': lambda: Pororo(task="col", lang="en"),
     'zh': lambda: Pororo(task="col", lang="zh"),
 })
+tokenizers = CachingDict('tokenizers', {
+    'ko': lambda: Pororo(task="tokenization", lang="ko", model="bpe32k.ko"),
+    'en': lambda: Pororo(task="tokenization", lang="en", model="roberta")
+})
+#word_translators = CachingDict('word_translators', {
+#    Pororo(task="word_translation", lang="en", tgt="fr")
+#    Pororo(task="word_translation", lang="ja", tgt="ko")
+#    Pororo(task="word_translation", lang="ko", tgt="en")
+#})
+
 
 @app.get("/morphologicalInflection")
 async def _(iso: str, word: str):
@@ -190,3 +201,12 @@ async def _(image_data: str):
 async def _(iso: str, word: str):
     return col[iso](word, detail=True)
 
+
+@app.get("/tokenizeText")
+async def _(iso: str, sentences: str):
+    return tokenizers[iso](sentences)
+
+
+@app.get("/wordTranslation")
+async def _(iso: str, sentences: str):
+    return word_translators[iso](sentences)

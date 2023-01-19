@@ -128,25 +128,25 @@ def test_sentiment_analysis():
 
 def test_zero_shot_topic_classification():
     # English appears to need a lot of memory
-    response = get_request("/zeroShotTopicClassification", {'iso': 'en', 'sentences': "Who are you voting for in 2020?"})
+    response = get_request("/zeroShotTopicClassification", {'iso': 'en', 'sentences': "Who are you voting for in 2020?", "topics": ','.join(["business", "art & culture", "politics"])})
     assert response.status_code == 200
-    assert response.json() == ["business", "art & culture", "politics"]
+    assert response.json() == {'business': 33.23, 'art & culture': 8.33, 'politics': 96.12}
     
-    response = get_request("/zeroShotTopicClassification", {'iso': 'ko', 'sentences': '''라리가 사무국, 메시 아닌 바르사 지지..."바이 아웃 유효" [공식발표]'''})
+    response = get_request("/zeroShotTopicClassification", {'iso': 'ko', 'sentences': '''라리가 사무국, 메시 아닌 바르사 지지..."바이 아웃 유효" [공식발표]''', "topics": ','.join(["스포츠", "사회", "정치", "경제", "생활/문화", "IT/과학"])})
     assert response.status_code == 200
-    assert response.json() == ["스포츠", "사회", "정치", "경제", "생활/문화", "IT/과학"]
+    assert response.json() == {'스포츠': 94.15, '사회': 37.11, '정치': 74.26, '경제': 39.18, '생활/문화': 71.15, 'IT/과학': 34.71}
     
-    response = get_request("/zeroShotTopicClassification", {'iso': 'ko', 'sentences': '''장제원, 김종인 당무감사 추진에 “참 잔인들 하다”···정강정책 개정안은 “졸작”'''})
+    response = get_request("/zeroShotTopicClassification", {'iso': 'ko', 'sentences': '''장제원, 김종인 당무감사 추진에 “참 잔인들 하다”···정강정책 개정안은 “졸작”''', "topics": ','.join(["스포츠", "사회", "정치", "경제", "생활/문화", "IT/과학"])})
     assert response.status_code == 200
-    assert response.json() == ["스포츠", "사회", "정치", "경제", "생활/문화", "IT/과학"]
+    assert response.json() == {'스포츠': 2.18, '사회': 56.1, '정치': 88.24, '경제': 16.17, '생활/문화': 66.13, 'IT/과학': 11.2}
     
-    response = get_request("/zeroShotTopicClassification", {'iso': 'ja', 'sentences': "香川 真司は、兵庫県神戸市垂水区出身のプロサッカー選手。元日本代表。ポジションはMF、FW。ボルシア・ドルトムント時代の2010-11シーズンでリーグ前半期17試合で8得点を記録し9シーズンぶりのリーグ優勝に貢献。キッカー誌が選定したブンデスリーガの年間ベスト イレブンに名を連ねた。"})
+    response = get_request("/zeroShotTopicClassification", {'iso': 'ja', 'sentences': "香川 真司は、兵庫県神戸市垂水区出身のプロサッカー選手。元日本代表。ポジションはMF、FW。ボルシア・ドルトムント時代の2010-11シーズンでリーグ前半期17試合で8得点を記録し9シーズンぶりのリーグ優勝に貢献。キッカー誌が選定したブンデスリーガの年間ベスト イレブンに名を連ねた。", "topics": ','.join(["スポーツ", "政治", "技術"])})
     assert response.status_code == 200
-    assert response.json() == ["スポーツ", "政治", "技術"]
+    assert response.json() == {'スポーツ': 0.2, '政治': 99.71, '技術': 68.9}
     
-    response = get_request("/zeroShotTopicClassification", {'iso': 'zh', 'sentences': "商务部14日发布数据显示，今年前10个月，我国累计对外投资904.6亿美元，同比增长5.9%。"})
+    response = get_request("/zeroShotTopicClassification", {'iso': 'zh', 'sentences': "商务部14日发布数据显示，今年前10个月，我国累计对外投资904.6亿美元，同比增长5.9%。", "topics": ','.join(["政治", "经济", "国际化"])})
     assert response.status_code == 200
-    assert response.json() == ["政治", "经济", "国际化"]
+    assert response.json() == {'政治': 33.72, '经济': 3.9, '国际化': 13.67}
 
 
 def test_natural_language_inference():
@@ -260,3 +260,19 @@ async def test_collocation():
     assert response.status_code == 200
     assert response.json()# == _({'noun': {'noun': [('2002年', 72), ('足球赛', 71), ('冠军', 53), ('2006年', 39), ('決賽', 35), ('决赛', 30), ('1998年', 26), ('外圍賽', 25), ('2010年', 23), ('2018年', 22), ('冠軍', 21), ...}})
     
+
+def test_tokenize_text():
+    response = get_request("/tokenizeText", {'iso': 'ko', 'sentences': "하늘을 나는 새를 보았다"})
+    assert response.status_code == 200
+    assert response.json()# == ["_하늘을", "_나는", "_새", "를", "_보", "았다"]
+
+    response = get_request("/tokenizeText", {'iso': 'en', 'sentences': "I love you"})
+    assert response.status_code == 200
+    assert response.json() == ['I', 'Ġlove', 'Ġyou']
+
+    response = get_request("/tokenizeText", {'iso': 'en', 'sentences': '''If the values aren’t unique, there is no unique inversion of the dictionary anyway or, with other words, inverting does not make sense.'''})
+    assert response.status_code == 200
+    assert response.json() == ['If', 'Ġthe', 'Ġvalues', 'Ġaren', 'âĢ', 'Ļ', 't', 'Ġunique', ',', 'Ġthere', 'Ġis', 'Ġno', 'Ġunique', 'Ġin',
+     'version', 'Ġof', 'Ġthe', 'Ġdictionary', 'Ġanyway', 'Ġor', ',', 'Ġwith', 'Ġother', 'Ġwords', ',', 'Ġinver', 'ting',
+     'Ġdoes', 'Ġnot', 'Ġmake', 'Ġsense', '.']
+
