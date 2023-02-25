@@ -102,12 +102,12 @@ class PororoPosFactory(PororoFactoryBase):
 
         if self.config.n_model == "mecab-ko":
             try:
-                import mecab
+                import mecab_ctypes
             except ModuleNotFoundError as error:
                 raise error.__class__(
                     "Please install python-mecab-ko with: `pip install python-mecab-ko`"
                 )
-            model = mecab.MeCab()
+            model = mecab_ctypes.MeCab()
             return PororoMecabPos(model, self.config)
 
         if self.config.n_model == "mecab-ipadic":
