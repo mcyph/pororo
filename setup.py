@@ -35,6 +35,10 @@ requirements = [
     "pytest",
     "fastapi[all]",
     'dataclasses; python_version<"3.7"',
+    "librosa",
+    "fastdtw",
+    "epitran",
+    "ko_pron",
 ]
 
 VERSION = {}  # type: ignore
