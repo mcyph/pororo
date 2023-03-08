@@ -3,39 +3,8 @@
 from setuptools import setup, find_packages
 
 packages = find_packages()
-requirements = [
-    "torch",
-    "torchvision",
-    "pillow",
-    "fairseq",
-    "transformers",
-    "sentence_transformers",
-    "nltk",
-    "word2word",
-    "wget",
-    "joblib",
-    "lxml",
-    "g2p_en",
-    "whoosh",
-    "marisa-trie",
-    "kss",
-    "g2pm",
-    "g2p", 
-    "g2pk", 
-    "romkan",
-    "fugashi",
-    "ipadic",
-    "jieba",
-    "romkan",
-    "koparadigm",
-    "opencv-python",
-    "scikit-image",
-    "kollocate",
-    "tensorboardX",
-    "pytest",
-    "fastapi[all]",
-    'dataclasses; python_version<"3.7"',
-]
+with open('requirements.txt', 'r', encoding='utf-8') as f:
+    requirements = f.readlines()
 
 VERSION = {}  # type: ignore
 with open("pororo/__version__.py", "r") as version_file:
