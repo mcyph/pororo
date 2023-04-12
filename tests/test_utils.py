@@ -9,8 +9,8 @@ class PororoUtilFuncTester(unittest.TestCase):
 
     def test_modules(self):
         try:
-            import mecab
-            tagger = mecab.MeCab()
+            import mecab_ctypes
+            tagger = mecab_ctypes.MeCab()
 
             res = postprocess_span(tagger, "이민자들은")
             self.assertIsInstance(res, str)

@@ -89,7 +89,7 @@ class PororoBlankFactory(PororoFactoryBase):
 
         if "posbert" in self.config.n_model:
             try:
-                import mecab  # noqa
+                import mecab_ctypes  # noqa
             except ModuleNotFoundError as error:
                 raise error.__class__(
                     "Please install python-mecab-ko with: `pip install python-mecab-ko`"

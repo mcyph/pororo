@@ -58,7 +58,7 @@ class PororoMrcFactory(PororoFactoryBase):
         """
         if "brainbert" in self.config.n_model:
             try:
-                import mecab
+                import mecab_ctypes
             except ModuleNotFoundError as error:
                 raise error.__class__(
                     "Please install python-mecab-ko with: `pip install python-mecab-ko`"
@@ -71,7 +71,7 @@ class PororoMrcFactory(PororoFactoryBase):
                 self.config.lang,
             ).eval().to(device))
 
-            tagger = mecab.MeCab()
+            tagger = mecab_ctypes.MeCab()
 
             return PororoBertMrc(model, tagger, postprocess_span, self.config)
 
